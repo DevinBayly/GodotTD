@@ -1,11 +1,12 @@
 shader_type canvas_item;
 
+uniform float tweak;
 uniform mat4 Hx;
 uniform mat4 Hy;
 uniform mat3 F;
 uniform vec2 offset;
 uniform vec2 scale;
-uniform vec2 resolution = vec2(1920.0, 1080.0);
+uniform vec2 resolution = vec2(1, 1);
 uniform sampler2D alphamask : hint_default_white;
 uniform float alphamask_hide = 0.0;
 
@@ -30,8 +31,8 @@ void fragment()
 	p = p*F;
 	p /= p.z;
 
-	p.x = p.x - offset.x;
-	p.y = p.y - offset.y;
+	p.x = p.x - offset.x*tweak;
+	p.y = p.y - offset.y*tweak;
 	p.x = p.x/scale.x;
 	p.y = p.y/scale.y;
 

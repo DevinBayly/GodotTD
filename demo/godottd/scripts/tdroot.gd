@@ -171,7 +171,7 @@ func _ready():
 		
 		# Finally setup the initial camera frustum
 		update_frustum()
-		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS,true)
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS,false)
 		
 	### Setup network
 	if test_local:
