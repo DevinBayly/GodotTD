@@ -52,6 +52,11 @@ func _run() -> void:
 	#print(data)
 	#print(entry)
 	entry["size"] = size
+	# set entry projector id in the middle to be half of the total number of projectors
+	# then we will decrease as we fill in ones to the left
+	# then we will increase from this as we go right
+	var middle_projector_id =  floor(screens/2)
+	entry["clients"][0]["projectors"][0]["id"] = middle_projector_id
 	
 	entry["bounds"]["bottom_right"] = [BR.x,BR.y,BR.z]
 	entry["bounds"]["top_left"]	 = [TL.x,TL.y,TL.z]
@@ -74,6 +79,8 @@ func _run() -> void:
 		entry["bounds"]["bottom_right"] = [BR.x,BR.y,BR.z]
 		entry["bounds"]["top_left"]	 = [TL.x,TL.y,TL.z]
 		entry["clients"][0]["projectors"][0]["resolution"] = [width,height]
+		# must subtract by non zero numbers from the middle projector id
+		entry["clients"][0]["projectors"][0]["id"] = middle_projector_id -(i+1)
 		data["walls"].push_back(entry)
 	var rhs_screens = floor(screens/2)
 	angle=-angle
@@ -92,6 +99,8 @@ func _run() -> void:
 		entry["bounds"]["bottom_right"] = [BR.x,BR.y,BR.z]
 		entry["bounds"]["top_left"]	 = [TL.x,TL.y,TL.z]
 		entry["clients"][0]["projectors"][0]["resolution"] = [width,height]
+		# must add by non zero numbers from the middle projector id
+		entry["clients"][0]["projectors"][0]["id"] = middle_projector_id +(i+1)
 		data["walls"].push_back(entry)
 	print(data)
 	# write ou tthe result

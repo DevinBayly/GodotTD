@@ -1,6 +1,6 @@
 {
 	"calibration_path" : "res://godottd/calibration/",
-	"calibration_file" : "3column_calibration.json",
+	"calibration_file" : "auto_filled.json",
 	"server_ip" : "localhost",
 	"server_port" : 55555,
 	"server_max_clients" : 50,
