@@ -14,6 +14,11 @@ void fragment()
 {
 	vec2 uv_screen = SCREEN_UV;
 	vec2 uv = uv_screen;
+	//uv -=.5;
+	//float angle = radians(-90);
+	//mat2 rot = mat2(vec2(cos(angle),sin(angle)),vec2(-sin(angle),cos(angle)));
+	//vec2 rotuv = rot*uv;
+	//rotuv +=.5;
 	vec2 uv_alpha = uv_screen;
 //
 	//uv.x *= resolution.x;

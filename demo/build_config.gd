@@ -1,8 +1,8 @@
 @tool
 extends EditorScript
-
-var width = 640.0
-var height = 360.0
+#939 1796
+var width = 1800.0
+var height = 350.0
 var swidth = 640.0
 var sheight = 360.0
 var horizontal 
@@ -142,7 +142,7 @@ func _run() -> void:
 	for i in range(screens):
 		server_config = instance_template.duplicate(true)
 		# here we are just placing them horizontally, if we needed to have things shift down by a certain amount in y, we could wrap on the i value
-		server_config["arguments"] = "%d %d %d %d %d 0" % [xanchor + width*i, yanchor,i, width,height]
+		server_config["arguments"] = "%d %d %d %d %d 0" % [xanchor, yanchor+height*i,i, width,height]
 		instance_config.push_back(server_config)
 	
 	config_options.set_value("debug_options","run_instances_config",instance_config)

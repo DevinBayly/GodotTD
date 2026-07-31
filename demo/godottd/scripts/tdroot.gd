@@ -21,6 +21,7 @@ var mouse_capture = 1
 var window_width
 var window_height
 var window_pos : Vector2i
+@export var projector_tilted = true
 
 ### Tiled display calibration
 var calibration : CalibrationData = null
@@ -138,6 +139,7 @@ func _ready():
 		
 	# All cients have to initialze calibration parameters
 	else:
+		
 		$Menu.visible = false
 		
 		aspect = calibration.frustum_size.y/calibration.frustum_size.x
@@ -171,8 +173,10 @@ func _ready():
 		
 		# Finally setup the initial camera frustum
 		update_frustum()
-		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS,false)
-		
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS,true)
+		if projector_tilted:
+			print("camera z basis",camera.transform.basis.z)
+			camera.rotate(camera.transform.basis.z,deg_to_rad(-90))
 	### Setup network
 	if test_local:
 		server_ip = "localhost"
