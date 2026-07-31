@@ -1,8 +1,10 @@
 @tool
 extends EditorScript
 
-var width = 640
-var height = 300
+var width = 640.0
+var height = 360.0
+var swidth = 640.0
+var sheight = 360.0
 var horizontal 
 # set the number of screens we are making
 var screens = 3
@@ -37,11 +39,11 @@ func _run() -> void:
 	# start with screen on our left, what's in the template file anyways	
 	var center_vec = Vector3(0,0,0)
 	# bottom right and top left
-	var BR: Vector3 = center_vec + Vector3(x/2,-y/2,0)
-	var TL: Vector3 = center_vec + Vector3(-x/2,y/2,0)
+	var BR: Vector3 = center_vec + Vector3(x/2,-y/2,-x/2)
+	var TL: Vector3 = center_vec + Vector3(-x/2,y/2,-x/2)
 	var centerBR = BR
 	var centerTL = TL
-	print(BR,TL)
+	#print(BR,TL)
 	# fill out the template 
 	var entry = data["walls"][0]
 	var wall_template  = entry.duplicate(true)
@@ -52,6 +54,7 @@ func _run() -> void:
 	#print(data)
 	#print(entry)
 	entry["size"] = size
+	print("size is ",size)
 	# set entry projector id in the middle to be half of the total number of projectors
 	# then we will decrease as we fill in ones to the left
 	# then we will increase from this as we go right
@@ -60,11 +63,14 @@ func _run() -> void:
 	
 	entry["bounds"]["bottom_right"] = [BR.x,BR.y,BR.z]
 	entry["bounds"]["top_left"]	 = [TL.x,TL.y,TL.z]
+	print([BR.x,BR.y,BR.z])
+	print( [TL.x,TL.y,TL.z])
+	
 	entry["clients"][0]["projectors"][0]["resolution"] = [width,height]
 	entry["normal"] = [normal_vec.x,normal_vec.y,normal_vec.z]
 	data["walls"].push_back(entry)
 	
-	print(normal_vec)
+	#print(normal_vec)
 	# rotate clockwise
 	var angle = deg_to_rad(90)
 	var lhs_screens = floor(screens/2)
@@ -72,6 +78,8 @@ func _run() -> void:
 		entry = wall_template.duplicate(true)
 		# rotate the wall vector also
 		normal_vec = normal_vec.rotated(Vector3(0,1,0),angle)
+		# TODO why does preventing this from being -0 keep the scene from being shown upsidown?
+		normal_vec.z =0
 		BR = BR.rotated(Vector3(0,1,0),angle)	
 		TL = TL.rotated(Vector3(0,1,0),angle)
 		entry["normal"] = [normal_vec.x,normal_vec.y,normal_vec.z]
@@ -92,6 +100,8 @@ func _run() -> void:
 		entry = wall_template.duplicate(true)
 		# rotate the wall vector also
 		normal_vec = normal_vec.rotated(Vector3(0,1,0),angle)
+		normal_vec.z =0
+
 		BR = BR.rotated(Vector3(0,1,0),angle)	
 		TL = TL.rotated(Vector3(0,1,0),angle)
 		entry["normal"] = [normal_vec.x,normal_vec.y,normal_vec.z]
@@ -102,12 +112,40 @@ func _run() -> void:
 		# must add by non zero numbers from the middle projector id
 		entry["clients"][0]["projectors"][0]["id"] = middle_projector_id +(i+1)
 		data["walls"].push_back(entry)
-	print(data)
+	#print(data)
 	# write ou tthe result
 	var ofile = FileAccess.open("res://godottd/calibration/auto_filled.json",FileAccess.WRITE)
 	ofile.store_string(JSON.stringify(data))
 	ofile.close()
 	#for i in range(rhs_screens):
-		
+	# update the custom run arguments
+	var config_options = ConfigFile.new()
+	config_options.load("res://.godot/editor/project_metadata.cfg")
+	print(config_options.get_value("debug_options","run_instances_config"))
+	# update the number of instances we will make , the +1 is because we need a server in the mix
+	config_options.set_value("debug_options","run_instance_count",float(screens +1))
+	var instance_config = config_options.get_value("debug_options","run_instances_config")
+	# get one copy of the launch dict that we can modify in loop
+	var instance_template = instance_config[0].duplicate(true)
+	# reset the instance_config
+	instance_config =[]
+	print("template",instance_template)
+	# always make sure there's a server process in there 
+	var server_config = instance_template.duplicate(true)
+	server_config["arguments"] = "0 320 -1 %d %d 0" % [swidth,sheight]
+	instance_config.push_back(server_config)
+	
+	# now iter over the remaining screens and make a launch instance for each of them
+	# assume we are listing from far left to right passing through the middle
+	var xanchor = 0
+	var yanchor =0
+	for i in range(screens):
+		server_config = instance_template.duplicate(true)
+		# here we are just placing them horizontally, if we needed to have things shift down by a certain amount in y, we could wrap on the i value
+		server_config["arguments"] = "%d %d %d %d %d 0" % [xanchor + width*i, yanchor,i, width,height]
+		instance_config.push_back(server_config)
+	
+	config_options.set_value("debug_options","run_instances_config",instance_config)
+	config_options.save("res://.godot/editor/project_metadata.cfg")
 	# then we will do the ones that go the right from there
 	pass
