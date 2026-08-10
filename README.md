@@ -28,6 +28,7 @@ The result when using more than 3 walls and a smaller angle will look like this
 
 The rest of the build script deals with updating the "debug multiple instances" capability within godot so that we can put the correct values in the cmd line arguments for the number of clients we are working with. 
 
+**to run the build script you must ensure the cursor is in the script editor and you can press Ctrl+Shift+X**
 ---
 
 
