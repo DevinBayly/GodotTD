@@ -1,3 +1,37 @@
+# Instructions for testing 
+
+To run this project on a new windows machine connected to a vis wall you may need a few additional files. Download the files from https://nextcloud.digital-rhizome.net/s/B7xKa7EDXpQ8sBp, and put them in the `demo/bin` folder so that the VRPN godot extension will work, or at least not throw any errors while testing.
+
+The next thing to do is to start the project up from within the `demo` folder, and then choose configuration values in the `demo/build_config.gd` file. This file aims to make it easier to test out different arrangements of "walls" (the bounds of the 3d space seen by a particular camera), and "client projectors" (the 2d results shown in client windows on the vis wall).
+
+Here's a snippet of the top of the `build_config.gd` file
+```
+var width = 1800.0
+var height = 350.0
+# these values are for the server window, which can be set to appear not on the vis wall by updating the first 2 cmd line arguments (x,y window output position)
+var swidth = 640.0
+var sheight = 360.0
+var horizontal 
+# set the number of screens we are making
+var screens = 3
+# set the offset angle between screens
+var angle = deg_to_rad(90)
+```
+
+This setup is for a basic cave cube presentation space with our starting wall "in front", the second "to the left", and the last "to our right".
+
+The result when using more than 3 walls and a smaller angle will look like this
+* the "in front" wall is created and added to the list first
+* we subtract from the screens count by 1, and divide the remaining screens between "left" and "right" views
+* we iterate over the left side first, offsetting by the angle provided adding "walls" and "client projectors" as we go
+* we then reset back to facing front, and iterate over the right side doing the same but rotating the other way
+
+The rest of the build script deals with updating the "debug multiple instances" capability within godot so that we can put the correct values in the cmd line arguments for the number of clients we are working with. 
+
+**to run the build script you must ensure the cursor is in the script editor and you can press Ctrl+Shift+X**
+---
+
+
 # Godot Tiled Display Framework
 
 This repository contains a sample application intended as a framework to implement Godot (https://godotengine.org/) applications for distributed tiled displays (such as CAVEs). It is capable of handling high resolution tiled displays which use multiple overlapping projectors per screen. The provided demo can be used either as a base for custom applications or as a main application that loads requested scenes at runtime.

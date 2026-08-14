@@ -8,6 +8,8 @@ var sheight = 360.0
 var horizontal 
 # set the number of screens we are making
 var screens = 3
+# set the offset angle between screens
+var angle = deg_to_rad(90)
 # Called when the script is executed (using File -> Run in Script Editor).
 func _run() -> void:
 	var filename = "res://godottd/calibration/template.json"
@@ -72,7 +74,6 @@ func _run() -> void:
 	
 	#print(normal_vec)
 	# rotate clockwise
-	var angle = deg_to_rad(90)
 	var lhs_screens = floor(screens/2)
 	for i in range(lhs_screens):
 		entry = wall_template.duplicate(true)
