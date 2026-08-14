@@ -1,8 +1,8 @@
 @tool
 extends EditorScript
 #939 1796
-var width = 1800.0
-var height = 350.0
+var width = 1796.0
+var height = 939.0/3.0
 var swidth = 640.0
 var sheight = 360.0
 var horizontal 
